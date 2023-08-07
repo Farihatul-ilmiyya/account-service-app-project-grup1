@@ -7,10 +7,10 @@ type Users struct {
 	Username    string
 	Email       string
 	Password    string
-	PhoneNumber int
-	DateOfBirth time.Time
+	PhoneNumber string
+	DateOfBirth string
 	Address     string
-	Balance     int
+	Balance     float64
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 	DeletedAt   time.Time

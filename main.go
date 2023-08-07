@@ -48,6 +48,7 @@ func main() {
 		//Entering id
 		fmt.Print("\nID\t\t: ")
 		fmt.Scanln(&newUser.ID)
+
 		//Entering Username
 		fmt.Print("\nUsername\t: ")
 		fmt.Scanln(&newUser.Username)
@@ -72,13 +73,15 @@ func main() {
 		fmt.Print("\nAddress\t\t: ")
 		fmt.Scanln(&newUser.Address)
 
+		//helpers.PrettyPrint(newUser)
+
 		//registering new user
 		str, err := controller.RegisterAccount(db, newUser)
 		if err != nil {
 			log.Fatal("[FAILED] Failed to register account", err.Error())
 		} else {
 			fmt.Println("")
-			log.Print("succes", str)
+			log.Print("success", str)
 		}
 
 	case 2:
