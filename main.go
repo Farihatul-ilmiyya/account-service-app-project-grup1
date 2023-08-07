@@ -1,6 +1,8 @@
 package main
 
 import (
+	"account-service-app/controller"
+	"account-service-app/entity"
 	"database/sql"
 	"fmt"
 	"log"
@@ -39,7 +41,46 @@ func main() {
 
 	switch pilihan {
 	case 1:
-		fmt.Println("Register")
+		fmt.Print("Register Account")
+		newUser := entity.Users{Balance: 0}
+		fmt.Print("\nEnter the data below:")
+
+		//Entering id
+		fmt.Print("\nID\t\t: ")
+		fmt.Scanln(&newUser.ID)
+		//Entering Username
+		fmt.Print("\nUsername\t: ")
+		fmt.Scanln(&newUser.Username)
+
+		//Entering email
+		fmt.Print("\nEmail\t\t: ")
+		fmt.Scanln(&newUser.Email)
+
+		//Entering Password
+		fmt.Print("\nPassword\t: ")
+		fmt.Scanln(&newUser.Password)
+
+		//Entering Phone Number
+		fmt.Print("\nPhone Number\t: ")
+		fmt.Scanln(&newUser.PhoneNumber)
+
+		//Entering Date of birth
+		fmt.Print("\nDate of Birth\t: ")
+		fmt.Scanln(&newUser.DateOfBirth)
+
+		//Entering address
+		fmt.Print("\nAddress\t\t: ")
+		fmt.Scanln(&newUser.Address)
+
+		//registering new user
+		str, err := controller.RegisterAccount(db, newUser)
+		if err != nil {
+			log.Fatal("[FAILED] Failed to register account", err.Error())
+		} else {
+			fmt.Println("")
+			log.Print("succes", str)
+		}
+
 	case 2:
 		fmt.Println("Login")
 	case 3:
