@@ -3,6 +3,7 @@ package main
 import (
 	"account-service-app/controller"
 	"account-service-app/entity"
+	"account-service-app/helpers"
 	"database/sql"
 	"fmt"
 	"log"
@@ -45,43 +46,82 @@ func main() {
 		newUser := entity.Users{Balance: 0}
 		fmt.Print("\nEnter the data below:")
 
-		//Entering id
-		fmt.Print("\nID\t\t: ")
-		fmt.Scanln(&newUser.ID)
-
 		//Entering Username
 		fmt.Print("\nUsername\t: ")
-		fmt.Scanln(&newUser.Username)
+		newUser.Username, err = helpers.Readline()
+		if err != nil {
+			log.Fatal("Error: ", err.Error())
+		}
 
 		//Entering email
-		fmt.Print("\nEmail\t: ")
-		fmt.Scanln(&newUser.Email)
+		emailLoop := true
+		for emailLoop {
+			fmt.Print("\nEmail\t\t: ")
+			fmt.Scanln(&newUser.Email)
+			emailIsValid, err := helpers.ValidationEmail(newUser.Email)
+			if emailIsValid {
+				emailLoop = false
+			} else {
+				log.Printf("Error: %s", err.Error())
+			}
+
+		}
 
 		//Entering Password
-		fmt.Print("\nPassword\t: ")
-		fmt.Scanln(&newUser.Password)
+		passLoop := true
+		for passLoop {
+			fmt.Print("\nPassword\t: ")
+			fmt.Scanln(&newUser.Password)
+			passwordIsValid, err := helpers.ValidationPassword(newUser.Password)
+			if passwordIsValid {
+				passLoop = false
+			} else {
+				log.Printf("Error: %s", err.Error())
+			}
+		}
 
 		//Entering Phone Number
-		fmt.Print("\nPhone Number\t: ")
-		fmt.Scanln(&newUser.PhoneNumber)
+		phoneLoop := true
+		for phoneLoop {
+			fmt.Print("\nPhone Number\t: ")
+			fmt.Scanln(&newUser.PhoneNumber)
+			phoneNumberIsValid, err := helpers.ValidationPhoneNumber(newUser.PhoneNumber)
+			if phoneNumberIsValid {
+				phoneLoop = false
+			} else {
+				log.Printf("Error: %s", err.Error())
+			}
+		}
 
 		//Entering Date of birth
-		fmt.Print("\nDate of Birth(YYYY-MM-DD)\t: ")
-		fmt.Scanln(&newUser.DateOfBirth)
+		dateLoop := true
+		for dateLoop {
+			fmt.Print("\nDate of Birth(YYYY-MM-DD)\t: ")
+			fmt.Scanln(&newUser.DateOfBirth)
+
+			if newUser.DateOfBirth == "" {
+				dateLoop = false
+			} else {
+				birthdateIsValid, _, err := helpers.ValidationDateofBirth(newUser.DateOfBirth)
+				if birthdateIsValid {
+					dateLoop = false
+				} else {
+					log.Printf("Error: %s", err.Error())
+				}
+
+			}
+		}
 
 		//Entering address
-		fmt.Print("\nAddress\t: ")
+		fmt.Print("\nAddress\t\t: ")
 		fmt.Scanln(&newUser.Address)
 
-		//helpers.PrettyPrint(newUser)
-
 		//registering new user
-		str, err := controller.RegisterAccount(db, newUser)
+		outputStr, err := controller.RegisterAccount(db, newUser)
 		if err != nil {
-			log.Fatal("[FAILED] Failed to register account", err.Error())
+			log.Printf("Error: %s", err.Error())
 		} else {
-			fmt.Println("")
-			log.Print("Success", str)
+			log.Printf("%s", outputStr)
 		}
 
 	case 2:
