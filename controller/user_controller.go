@@ -68,7 +68,7 @@ func Login(db *sql.DB, user entity.Users) (string, error) {
 		return "", err
 	}
 
-	if user.Password != password {
+	if !helpers.ComparePassword(user.Password, password) {
 		return "", errors.New("Passowrd is not match")
 	}
 	return "Login successfully", nil
