@@ -54,61 +54,59 @@ func main() {
 		}
 
 		//Entering email
-		emailLoop := true
-		for emailLoop {
+		emailLoop := false
+		for !emailLoop {
 			fmt.Print("\nEmail\t\t: ")
 			fmt.Scanln(&newUser.Email)
 			emailIsValid, err := helpers.ValidationEmail(newUser.Email)
 			if emailIsValid {
-				emailLoop = false
+				emailLoop = true
 			} else {
 				log.Printf("Error: %s", err.Error())
 			}
-
 		}
 
 		//Entering Password
-		passLoop := true
-		for passLoop {
+		passLoop := false
+		for !passLoop {
 			fmt.Print("\nPassword\t: ")
 			fmt.Scanln(&newUser.Password)
 			passwordIsValid, err := helpers.ValidationPassword(newUser.Password)
 			if passwordIsValid {
-				passLoop = false
+				passLoop = true
 			} else {
 				log.Printf("Error: %s", err.Error())
 			}
 		}
 
 		//Entering Phone Number
-		phoneLoop := true
-		for phoneLoop {
+		phoneLoop := false
+		for !phoneLoop {
 			fmt.Print("\nPhone Number\t: ")
 			fmt.Scanln(&newUser.PhoneNumber)
 			phoneNumberIsValid, err := helpers.ValidationPhoneNumber(newUser.PhoneNumber)
 			if phoneNumberIsValid {
-				phoneLoop = false
+				phoneLoop = true
 			} else {
 				log.Printf("Error: %s", err.Error())
 			}
 		}
 
 		//Entering Date of birth
-		dateLoop := true
-		for dateLoop {
+		dateLoop := false
+		for !dateLoop {
 			fmt.Print("\nDate of Birth(YYYY-MM-DD)\t: ")
 			fmt.Scanln(&newUser.DateOfBirth)
 
 			if newUser.DateOfBirth == "" {
 				dateLoop = false
 			} else {
-				birthdateIsValid, _, err := helpers.ValidationDateofBirth(newUser.DateOfBirth)
+				birthdateIsValid, err := helpers.ValidationDateofBirth(newUser.DateOfBirth)
 				if birthdateIsValid {
-					dateLoop = false
+					dateLoop = true
 				} else {
 					log.Printf("Error: %s", err.Error())
 				}
-
 			}
 		}
 

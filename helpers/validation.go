@@ -52,16 +52,17 @@ func ValidationPhoneNumber(phonenumber string) (bool, error) {
 	return true, nil
 }
 
-func ValidationDateofBirth(dateString string) (bool, time.Time, error) {
-	if dateString == "" {
-		return false, time.Time{}, nil
-	} else {
-		parsedDate, err := time.Parse("2006-01-02", dateString)
-
+func ValidationDateofBirth(dateString string) (bool, error) {
+	// if dateString == "" {
+	// 	return true, time.Time{}, nil
+	// } else {
+	if len(dateString) > 0 {
+		_, err := time.Parse("2006-01-02", dateString)
 		if err != nil {
-			return false, time.Time{}, err
+			return false, err
 		}
-		return true, parsedDate, nil
-	}
 
+	}
+	//}
+	return true, nil
 }
