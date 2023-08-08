@@ -146,6 +146,7 @@ func main() {
 				fmt.Println("")
 				log.Print("succes", str)
 				isLogin = true
+				phoneNumber = userLogin.PhoneNumber
 
 			}
 		case 3:
@@ -154,14 +155,14 @@ func main() {
 				fmt.Println("You are not login")
 				return
 			}
-			user, err := controller.Profile(db, userProfile)
+			_, err := controller.Profile(db, userProfile)
 			if err != nil {
 
 				log.Fatal("[FAILED] failed check users profile ", err.Error())
 				return
 			} else {
 				fmt.Println("")
-				log.Print("succes", user)
+				
 
 			}
 

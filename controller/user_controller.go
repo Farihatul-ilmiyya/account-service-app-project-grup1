@@ -31,7 +31,7 @@ func RegisterAccount(db *sql.DB, user entity.Users) (string, error) {
 
 func Profile(db *sql.DB, user entity.Users) (entity.Users, error) {
 	sqlQuery := "select id ,username,phone_number,email ,date_of_birth,balance,address from users where phone_number = ? and deleted_at is null"
-
+	fmt.Println(user.PhoneNumber)
 	err := db.QueryRow(sqlQuery, user.PhoneNumber).Scan(&user.ID, &user.Username, &user.PhoneNumber, &user.Email, &user.DateOfBirth, &user.Balance, &user.Address)
 
 	if err != nil {
