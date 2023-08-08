@@ -1,6 +1,9 @@
 package main
 
 import (
+	"account-service-app/controller"
+	"account-service-app/entity"
+	"account-service-app/helpers"
 	"database/sql"
 	"fmt"
 	"log"
@@ -39,7 +42,88 @@ func main() {
 
 	switch pilihan {
 	case 1:
-		fmt.Println("Register")
+		fmt.Print("Register Account")
+		newUser := entity.Users{Balance: 0}
+		fmt.Print("\nEnter the data below:")
+
+		//Entering Username
+		fmt.Print("\nUsername\t: ")
+		newUser.Username, err = helpers.Readline()
+		if err != nil {
+			log.Fatal("Error: ", err.Error())
+		}
+
+		//Entering email
+		emailLoop := true
+		for emailLoop {
+			fmt.Print("\nEmail\t\t: ")
+			fmt.Scanln(&newUser.Email)
+			emailIsValid, err := helpers.ValidationEmail(newUser.Email)
+			if emailIsValid {
+				emailLoop = false
+			} else {
+				log.Printf("Error: %s", err.Error())
+			}
+
+		}
+
+		//Entering Password
+		passLoop := true
+		for passLoop {
+			fmt.Print("\nPassword\t: ")
+			fmt.Scanln(&newUser.Password)
+			passwordIsValid, err := helpers.ValidationPassword(newUser.Password)
+			if passwordIsValid {
+				passLoop = false
+			} else {
+				log.Printf("Error: %s", err.Error())
+			}
+		}
+
+		//Entering Phone Number
+		phoneLoop := true
+		for phoneLoop {
+			fmt.Print("\nPhone Number\t: ")
+			fmt.Scanln(&newUser.PhoneNumber)
+			phoneNumberIsValid, err := helpers.ValidationPhoneNumber(newUser.PhoneNumber)
+			if phoneNumberIsValid {
+				phoneLoop = false
+			} else {
+				log.Printf("Error: %s", err.Error())
+			}
+		}
+
+		//Entering Date of birth
+		dateLoop := true
+		for dateLoop {
+			fmt.Print("\nDate of Birth(YYYY-MM-DD)\t: ")
+			fmt.Scanln(&newUser.DateOfBirth)
+
+			if newUser.DateOfBirth == "" {
+				dateLoop = false
+			} else {
+				birthdateIsValid, _, err := helpers.ValidationDateofBirth(newUser.DateOfBirth)
+				if birthdateIsValid {
+					dateLoop = false
+				} else {
+					log.Printf("Error: %s", err.Error())
+				}
+
+			}
+		}
+
+		//Entering address
+		fmt.Print("\nAddress\t\t: ")
+		fmt.Scanln(&newUser.Address)
+
+		//registering new user
+		outputStr, err := controller.RegisterAccount(db, newUser)
+		if err != nil {
+			log.Printf("Error: %s", err.Error())
+		} else {
+			log.Printf("%s", outputStr)
+		}
+
 	case 2:
 		fmt.Println("Login")
 	case 3:
