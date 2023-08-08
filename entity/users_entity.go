@@ -8,7 +8,7 @@ type Users struct {
 	Email       string
 	Password    string
 	PhoneNumber int
-	DateOfBirth time.Time
+	DateOfBirth string
 	Address     string
 	Balance     int
 	CreatedAt   time.Time
