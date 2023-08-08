@@ -54,7 +54,7 @@ func main() {
 		fmt.Scanln(&newUser.Username)
 
 		//Entering email
-		fmt.Print("\nEmail\t\t: ")
+		fmt.Print("\nEmail\t: ")
 		fmt.Scanln(&newUser.Email)
 
 		//Entering Password
@@ -66,11 +66,11 @@ func main() {
 		fmt.Scanln(&newUser.PhoneNumber)
 
 		//Entering Date of birth
-		fmt.Print("\nDate of Birth\t: ")
+		fmt.Print("\nDate of Birth(YYYY-MM-DD)\t: ")
 		fmt.Scanln(&newUser.DateOfBirth)
 
 		//Entering address
-		fmt.Print("\nAddress\t\t: ")
+		fmt.Print("\nAddress\t: ")
 		fmt.Scanln(&newUser.Address)
 
 		//helpers.PrettyPrint(newUser)
@@ -81,7 +81,7 @@ func main() {
 			log.Fatal("[FAILED] Failed to register account", err.Error())
 		} else {
 			fmt.Println("")
-			log.Print("success", str)
+			log.Print("Success", str)
 		}
 
 	case 2:
