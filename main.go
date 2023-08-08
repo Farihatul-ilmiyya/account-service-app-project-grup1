@@ -14,7 +14,7 @@ import (
 )
 
 func main() {
-	// ConnectionDB := "root:8423@tcp(localhost:3306)/Account_Service_DB"
+
 	ConnectionDB := os.Getenv("ConnectionDB")
 	db, err := sql.Open("mysql", ConnectionDB)
 
@@ -126,6 +126,28 @@ func main() {
 				log.Printf("%s", outputStr)
 			}
 
+		case 2:
+			fmt.Println("Login")
+			userLogin := entity.Users{Balance: 0}
+
+			fmt.Print("\nPhone Number\t: ")
+			fmt.Scanln(&userLogin.PhoneNumber)
+
+			//Entering Password
+			fmt.Print("\nPassword\t: ")
+			fmt.Scanln(&userLogin.Password)
+
+			str, err := controller.Login(db, userLogin)
+			if err != nil {
+
+				log.Fatal("[FAILED] Failed to login account", err.Error())
+				return
+			} else {
+				fmt.Println("")
+				log.Print("succes", str)
+				isLogin = true
+
+			}
 		case 3:
 			userProfile := entity.Users{PhoneNumber: phoneNumber}
 			if !isLogin {
