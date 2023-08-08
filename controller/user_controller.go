@@ -5,6 +5,9 @@ import (
 	"account-service-app/helpers"
 	"database/sql"
 
+	"fmt"
+	"log"
+
 	"github.com/google/uuid"
 )
 
@@ -23,4 +26,29 @@ func RegisterAccount(db *sql.DB, user entity.Users) (string, error) {
 
 	outputStr := "\n[SUCCESS] Account registered successfully.\n\n"
 	return outputStr, nil
+}
+
+func Profile(db *sql.DB, user entity.Users) (entity.Users, error) {
+	sqlQuery := "select id ,username,phone_number,email ,date_of_birth,balance,address from users where phone_number = ? and deleted_at is null"
+
+	err := db.QueryRow(sqlQuery, user.PhoneNumber).Scan(&user.ID, &user.Username, &user.PhoneNumber, &user.Email, &user.DateOfBirth, &user.Balance, &user.Address)
+
+	if err != nil {
+		log.Fatal("Error check profile", err.Error())
+		return entity.Users{}, err
+	}
+	outputStr := fmt.Sprintln("-----------------------------------------")
+	outputStr += fmt.Sprintln("Your Account Information")
+	outputStr += fmt.Sprintln("-----------------------------------------")
+	outputStr += fmt.Sprintf("ID\t\t: %s\n", user.ID)
+	outputStr += fmt.Sprintf("User Name\t: %s\n", user.Username)
+	outputStr += fmt.Sprintf("Birth Date\t: %s\n", user.DateOfBirth)
+	outputStr += fmt.Sprintf("Address\t\t: %s\n", user.Address)
+	outputStr += fmt.Sprintf("Email\t\t: %s\n", user.Email)
+	outputStr += fmt.Sprintf("Phone Number\t: %s\n", user.PhoneNumber)
+	outputStr += fmt.Sprintf("Balance\t\t: %.2f\n", user.Balance)
+	outputStr += fmt.Sprintln("-----------------------------------------")
+	fmt.Println(outputStr)
+	return user, nil
+
 }
