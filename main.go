@@ -118,6 +118,10 @@ func main() {
 			//Entering address
 			fmt.Print("\nAddress\t\t: ")
 			fmt.Scanln(&newUser.Address)
+			newUser.Address, err = helpers.Readline()
+			if err != nil {
+				log.Fatal("Error: ", err.Error())
+			}
 
 			//registering new user
 			outputStr, err := controller.RegisterAccount(db, newUser)
@@ -169,7 +173,19 @@ func main() {
 		case 4:
 			fmt.Println("Update Account")
 		case 5:
-			fmt.Println("Delete Account")
+			userDelete := entity.Users{PhoneNumber: phoneNumber}
+			if !isLogin {
+				fmt.Println("You are not Login")
+				return
+			}
+			outputStr, err := controller.DeleteUser(db, userDelete)
+			if err != nil {
+				log.Fatal("[FAILED] failed delete account ", err.Error())
+				return
+			} else {
+				log.Printf("%s", outputStr)
+			}
+
 		case 6:
 			fmt.Println("Top Up")
 		case 7:
