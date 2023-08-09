@@ -99,7 +99,7 @@ func main() {
 			//Entering Date of birth
 			dateLoop := false
 			for !dateLoop {
-				fmt.Print("\nDate of Birth(YYYY-MM-DD): ")
+				fmt.Print("\nDate of Birth(YYYY-MM-DD)\t: ")
 				fmt.Scanln(&newUser.DateOfBirth)
 
 				if newUser.DateOfBirth == "" {
@@ -117,7 +117,6 @@ func main() {
 
 			//Entering address
 			fmt.Print("\nAddress\t\t: ")
-			fmt.Scanln(&newUser.Address)
 			newUser.Address, err = helpers.Readline()
 			if err != nil {
 				log.Fatal("Error: ", err.Error())

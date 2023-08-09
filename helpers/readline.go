@@ -13,7 +13,5 @@ func Readline() (string, error) {
 	if err != nil {
 		return "", err
 	}
-
-	// str = strings.TrimSuffix(str, "\n")
 	return str, nil
 }

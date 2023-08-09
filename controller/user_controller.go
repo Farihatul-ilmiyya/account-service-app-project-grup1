@@ -73,27 +73,27 @@ func Login(db *sql.DB, user entity.Users) (string, error) {
 
 }
 
-func DeleteUser(db *sql.DB, user entity.Users) (string, error){
-	_, err:= db.Exec("UPDATE users SET deleted_at = now() WHERE phone_number = ?", user.PhoneNumber)
+func DeleteUser(db *sql.DB, user entity.Users) (string, error) {
+	_, err := db.Exec("UPDATE users SET deleted_at = now() WHERE phone_number = ?", user.PhoneNumber)
 
 	if err != nil {
-		return"", err
+		return "", err
 	}
 
 	outputStr := "\n[SUCCESS] Account deleted successfully.\n\n"
 	return outputStr, nil
 }
 
-func ReadOtherUser(db *sql.DB, user entity.Users)(entity.Users, error){
-	sqlQuery :="SELECT username, email, phone_Number, date_of_birth, address FROM Users WHERE phone_number = ? AND deleted_at IS NULL "
-	
-	err:=db.QueryRow(sqlQuery, user.PhoneNumber).Scan(&user.Username, &user.Email, &user.PhoneNumber, &user.DateOfBirth, &user.Address)
+func ReadOtherUser(db *sql.DB, user entity.Users) (entity.Users, error) {
+	sqlQuery := "SELECT username, email, phone_Number, date_of_birth, address FROM Users WHERE phone_number = ? AND deleted_at IS NULL "
+
+	err := db.QueryRow(sqlQuery, user.PhoneNumber).Scan(&user.Username, &user.Email, &user.PhoneNumber, &user.DateOfBirth, &user.Address)
 
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return entity.Users{}, fmt.Errorf("user not found")
 		}
-		
+
 	}
 	return user, err
 }
