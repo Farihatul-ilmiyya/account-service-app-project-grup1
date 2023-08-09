@@ -74,3 +74,16 @@ func Login(db *sql.DB, user entity.Users) (string, error) {
 	return "Login successfully", nil
 
 }
+
+func DeleteUser(db *sql.DB, user entity.Users) (string, error){
+	_, err:= db.Exec("UPDATE users SET deleted_at = now() WHERE phone_number = ?", user.PhoneNumber)
+
+	defer db.Close()
+
+	if err != nil {
+		return"", err
+	}
+
+	outputStr := "\n[SUCCESS] Account deleted successfully.\n\n"
+	return outputStr, nil
+}
