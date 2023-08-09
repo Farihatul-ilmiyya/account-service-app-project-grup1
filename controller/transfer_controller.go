@@ -4,6 +4,8 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+
+	"github.com/google/uuid"
 )
 
 func Transfer(db *sql.DB, phoneSender, phoneRecipient string, amount float64) (string, error) {
@@ -19,7 +21,7 @@ func Transfer(db *sql.DB, phoneSender, phoneRecipient string, amount float64) (s
 	if err != nil {
 		log.Fatal("failed to begin transaction", err)
 	}
-
+	Uuid := uuid.New()
 	//cek uang sender
 	var senderBalance float64
 	err = tx.QueryRow("SELECT balance FROM users WHERE phone_number = ? AND deleted_at IS NULL", phoneSender).Scan(&senderBalance)
@@ -67,7 +69,7 @@ func Transfer(db *sql.DB, phoneSender, phoneRecipient string, amount float64) (s
 	}
 
 	//jika transfer berhasil maka masukkan data ke transfer history
-	_, err = tx.Exec("INSERT INTO transfer (user_id_sender, user_id_recipient, amount) VALUES(?, ?, ?)", senderID, recipientID, amount)
+	_, err = tx.Exec("INSERT INTO transfer (id, user_id_sender, user_id_recipient, amount) VALUES(?, ?, ?,?)", Uuid, senderID, recipientID, amount)
 	if err != nil {
 		return "", err
 	}

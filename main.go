@@ -189,6 +189,27 @@ func main() {
 			fmt.Println("Top Up")
 		case 7:
 			fmt.Println("Transfer")
+			if !isLogin {
+				fmt.Println("You are not Login")
+				return
+			}
+			var phoneRecipient string
+			var tranferAmount float64
+
+			fmt.Print("\nPhone Number\t: ")
+			fmt.Scanln(&phoneRecipient)
+
+			//Entering Password
+			fmt.Print("\nAmount\t\t: ")
+			fmt.Scanln(&tranferAmount)
+
+			outputStr, err := controller.Transfer(db, phoneNumber, phoneRecipient, tranferAmount)
+			if err != nil {
+				log.Fatal("[FAILED] failed transfer", err.Error())
+				return
+			} else {
+				log.Printf("%s", outputStr)
+			}
 		case 8:
 			fmt.Println("Top Up History")
 		case 9:
