@@ -19,8 +19,6 @@ func RegisterAccount(db *sql.DB, user entity.Users) (string, error) {
 
 	_, err := db.Exec("INSERT INTO users(id, username, email, password, phone_number, date_of_birth, address, balance) VALUE (?, ?, ?, ?, ?, ?, ?, ?)", Uuid, user.Username, user.Email, passHashing, user.PhoneNumber, user.DateOfBirth, user.Address, user.Balance)
 
-	defer db.Close()
-
 	if err != nil {
 		return "", err
 	}
@@ -77,8 +75,6 @@ func Login(db *sql.DB, user entity.Users) (string, error) {
 
 func DeleteUser(db *sql.DB, user entity.Users) (string, error){
 	_, err:= db.Exec("UPDATE users SET deleted_at = now() WHERE phone_number = ?", user.PhoneNumber)
-
-	defer db.Close()
 
 	if err != nil {
 		return"", err
