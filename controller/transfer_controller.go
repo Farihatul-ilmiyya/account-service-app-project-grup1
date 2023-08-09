@@ -69,7 +69,7 @@ func Transfer(db *sql.DB, phoneSender, phoneRecipient string, amount float64) (s
 	}
 
 	//jika transfer berhasil maka masukkan data ke transfer history
-	_, err = tx.Exec("INSERT INTO transfer (id, user_id_sender, user_id_recipient, amount) VALUES(?, ?, ?,?)", Uuid, senderID, recipientID, amount)
+	_, err = tx.Exec("INSERT INTO transfer (id, user_id_sender, user_id_recipient, amount) VALUES(?, ?, ?, ?)", Uuid, senderID, recipientID, amount)
 	if err != nil {
 		return "", err
 	}
