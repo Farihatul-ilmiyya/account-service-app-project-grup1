@@ -28,10 +28,6 @@ func ValidationPassword(password string) (bool, error) {
 	if len(password) < 5 {
 		return false, fmt.Errorf("password must be at least 5 characters")
 	}
-	// patern := `[a-zA-Z0-9._%+-]`
-	// regex := regexp.MustCompile(patern)
-	// if !regex.MatchString(password)
-	// 	return false, fmt.Errorf()
 	return true, nil
 }
 
@@ -53,16 +49,11 @@ func ValidationPhoneNumber(phonenumber string) (bool, error) {
 }
 
 func ValidationDateofBirth(dateString string) (bool, error) {
-	// if dateString == "" {
-	// 	return true, time.Time{}, nil
-	// } else {
 	if len(dateString) > 0 {
 		_, err := time.Parse("2006-01-02", dateString)
 		if err != nil {
 			return false, err
 		}
-
 	}
-	//}
 	return true, nil
 }

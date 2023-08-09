@@ -99,10 +99,11 @@ func main() {
 			//Entering Date of birth
 			dateLoop := false
 			for !dateLoop {
-				fmt.Print("\nDate of Birth(YYYY-MM-DD)\t: ")
+				fmt.Print("\nDate of Birth(YYYY-MM-DD): ")
 				fmt.Scanln(&newUser.DateOfBirth)
 
 				if newUser.DateOfBirth == "" {
+					fmt.Print("dateofbirth cannot empty")
 					dateLoop = false
 				} else {
 					birthdateIsValid, err := helpers.ValidationDateofBirth(newUser.DateOfBirth)
@@ -162,7 +163,6 @@ func main() {
 				return
 			} else {
 				fmt.Println("")
-				
 
 			}
 
