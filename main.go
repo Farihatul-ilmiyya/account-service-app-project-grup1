@@ -196,6 +196,40 @@ func main() {
 			fmt.Println("Transfer History")
 		case 10:
 			fmt.Println("Other Contact")
+
+			if !isLogin {
+				fmt.Println("You are not login")
+				return
+			}
+			var otherUserPhoneNumber string
+			otherUser := entity.Users{PhoneNumber: otherUserPhoneNumber}
+			fmt.Print("\nEnter other user's phone number\t: ")
+			fmt.Scanln(&otherUser.PhoneNumber)
+
+			user, err := controller.ReadOtherUser(db, otherUser)
+			if otherUser.PhoneNumber != phoneNumber {
+				if err != nil {
+					if err == sql.ErrNoRows {
+						log.Println("User not found")
+					}
+					log.Fatal("[FAILED] failed to check users profile ", err.Error())
+					return
+				} else {
+					outputStr := fmt.Sprintln("-----------------------------------------")
+					outputStr += fmt.Sprintln("Other User Information")
+					outputStr += fmt.Sprintln("-----------------------------------------")
+					outputStr += fmt.Sprintf("User Name\t: %s\n", user.Username)
+					outputStr += fmt.Sprintf("Birth Date\t: %s\n", user.DateOfBirth)
+					outputStr += fmt.Sprintf("Address\t\t: %s\n", user.Address)
+					outputStr += fmt.Sprintf("Email\t\t: %s\n", user.Email)
+					outputStr += fmt.Sprintf("Phone Number\t: %s\n", user.PhoneNumber)
+					outputStr += fmt.Sprintln("-----------------------------------------")
+					fmt.Println(outputStr)
+				}
+			} else {
+				log.Printf("Choose option 3 to see your account information")
+			}
+
 		case 11:
 			fmt.Println("Log Out")
 		}
