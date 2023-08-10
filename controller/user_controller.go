@@ -97,3 +97,59 @@ func ReadOtherUser(db *sql.DB, user entity.Users) (entity.Users, error) {
 	}
 	return user, err
 }
+
+func UpdateAccount(db *sql.DB, user entity.Users) (string, error) {
+	var (
+		field string
+		args  []any
+		where string
+	)
+
+	if user.Username != "" {
+		field += " username=? "
+		args = append(args, user.Username)
+	}
+
+	if user.Password != "" {
+		field += " password=? "
+		args = append(args, user.Password)
+	}
+
+	if user.Email != "" {
+		field += " email=? "
+		args = append(args, user.Email)
+	}
+
+	if user.DateOfBirth != "" {
+		field += " date_of_birth=? "
+		args = append(args, user.DateOfBirth)
+	}
+
+	if user.Address != "" {
+		field += " address=? "
+		args = append(args, user.Address)
+	}
+
+	// baris ini khusu where di sql
+	if user.PhoneNumber != "" {
+		where += " AND phone_number= ? "
+		args = append(args, user.PhoneNumber)
+	}
+
+	fmt.Println(args...)
+	sqlQuerry := "update users set " + field + " WHERE    deleted_at IS NULL" + where
+	fmt.Println(sqlQuerry)
+	_, err := db.Exec(sqlQuerry, args...)
+	if err != nil {
+		return "", nil
+	}
+	outputStr := "\n[SUCCESS] Update Account successfully.\n\n"
+	return outputStr, nil
+}
+
+func LogOutAccount(phoneNumber, password *string) string {
+	*phoneNumber = ""
+	*password = ""
+
+	return "\n[SUCCESS] Log out success"
+}
