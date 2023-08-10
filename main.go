@@ -37,6 +37,7 @@ func main() {
 	loop := true
 	isLogin := false
 	phoneNumber := ""
+	password := ""
 	for loop {
 		//MENU
 		fmt.Println("Pilih Menu:\n1. Register.\n2. Login.\n3. Profile.\n4. Update Account.\n5. Delete Account.\n6. Top Up.\n7. Transfer.\n8. Top Up history.\n9. Transfer History.\n10. Other Contact.\n11. Log Out.")
@@ -149,7 +150,7 @@ func main() {
 
 		case 2:
 			fmt.Println("Login")
-			userLogin := entity.Users{Balance: 0}
+			userLogin := entity.Users{}
 
 			fmt.Print("\nPhone Number\t: ")
 			fmt.Scanln(&userLogin.PhoneNumber)
@@ -187,7 +188,102 @@ func main() {
 			}
 
 		case 4:
-			fmt.Println("Update Account")
+			userUpdate := entity.Users{PhoneNumber: phoneNumber}
+			if !isLogin {
+				fmt.Println("You are not login")
+				return
+			}
+			updateMenu := `
+				Select the section you want to update:
+
+				[1].	User Name
+				[2].	Password
+				[3].	Email
+				[4].	Birth Date
+				[5].	Address
+				[6].	Finish Update
+					
+				`
+
+			updateLoop := true
+			for updateLoop {
+				fmt.Println(updateMenu)
+				fmt.Print("\nEnter update menu option: ")
+				var option int
+				fmt.Scanln(&option)
+
+				switch option {
+				case 1: //update username
+
+					fmt.Print("\nUsername\t: ")
+					userUpdate.Username, err = helpers.Readline()
+					if err != nil {
+						log.Fatal("Error: ", err.Error())
+					}
+
+				case 2: //update password
+					passLoop := false
+					for !passLoop {
+						fmt.Print("\nPassword\t: ")
+						fmt.Scanln(&userUpdate.Password)
+						passwordIsValid, err := helpers.ValidationPassword(userUpdate.Password)
+						if passwordIsValid {
+							passLoop = true
+						} else {
+							log.Printf("Error: %s", err.Error())
+						}
+					}
+				case 3: //Update Email
+					emailLoop := false
+					for !emailLoop {
+						fmt.Print("\nEmail\t\t: ")
+						fmt.Scanln(&userUpdate.Email)
+						emailIsValid, err := helpers.ValidationEmail(userUpdate.Email)
+						if emailIsValid {
+							emailLoop = true
+						} else {
+							log.Printf("Error: %s", err.Error())
+						}
+					}
+				case 4: //update Birth Date
+					dateLoop := false
+					for !dateLoop {
+						fmt.Print("\nDate of Birth(YYYY-MM-DD)\t: ")
+						fmt.Scanln(&userUpdate.DateOfBirth)
+
+						if userUpdate.DateOfBirth == "" {
+							fmt.Print("dateofbirth cannot empty")
+							dateLoop = false
+						} else {
+							birthdateIsValid, err := helpers.ValidationDateofBirth(userUpdate.DateOfBirth)
+							if birthdateIsValid {
+								dateLoop = true
+							} else {
+								log.Printf("Error: %s", err.Error())
+							}
+						}
+					}
+				case 5: //Update Address
+
+					fmt.Print("\nAddress\t\t: ")
+					userUpdate.Address, err = helpers.Readline()
+					if err != nil {
+						log.Fatal("Error: ", err.Error())
+					}
+				case 6: //Final update
+					updateLoop = false
+					fmt.Printf("\nUpdate complete.\n")
+
+				}
+				outputStr, err := controller.UpdateAccount(db, userUpdate)
+				if err != nil {
+					log.Printf("Error: %s", err.Error())
+				} else {
+					log.Printf("%s", outputStr)
+				}
+
+			}
+
 		case 5:
 			fmt.Println("Delete Account")
 			userDelete := entity.Users{PhoneNumber: phoneNumber}
@@ -205,6 +301,24 @@ func main() {
 
 		case 6:
 			fmt.Println("Top Up")
+			if !isLogin {
+				fmt.Println("You are not Login")
+				return
+			} else {
+				var topupAmount float64 = 0
+				fmt.Print("\nEnter top amount: ")
+				fmt.Scanln(&topupAmount)
+				str, err := controller.TopUp(db, phoneNumber, topupAmount)
+				if err != nil {
+					fmt.Println("error dia")
+					fmt.Printf("\n")
+					log.Printf("\033[91mError: %s\033[0m\n", err.Error())
+				} else {
+					fmt.Printf("\n")
+					log.Printf("\033[92m%s\033[0m\n", str)
+				}
+			}
+
 		case 7:
 			fmt.Println("Transfer")
 			if !isLogin {
@@ -230,6 +344,32 @@ func main() {
 			}
 		case 8:
 			fmt.Println("Top Up History")
+
+			if !isLogin {
+				fmt.Println("You are not login")
+				return
+			}
+
+			histories, err := controller.HistoryTopUp(db, phoneNumber)
+
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
+			fmt.Printf("\n")
+			fmt.Println("-----------------------------------------")
+			fmt.Printf("Your top-up history: \n")
+			fmt.Println("-----------------------------------------")
+			topupCounter := 0
+			// Print top-up histories
+			for _, history := range histories {
+				topupCounter++
+				fmt.Printf("User ID\t: %s\n", history.Id)
+				fmt.Printf("Amount\t: %.2f\n", history.Amount)
+				fmt.Printf("Time\t: %s\n", history.CreatedAt.Format("2006-01-02 15:04:05"))
+				fmt.Println("-----------------------------------------")
+			}
+			fmt.Println("Count:", topupCounter)
 		case 9:
 			fmt.Println("Transfer History")
 			if !isLogin {
@@ -293,6 +433,9 @@ func main() {
 
 		case 11:
 			fmt.Println("Log Out")
+			str := controller.LogOutAccount(&phoneNumber, &password)
+			fmt.Printf("\033[92m%s\033[0m\n", str)
+			isLogin = false
 		}
 	}
 }
