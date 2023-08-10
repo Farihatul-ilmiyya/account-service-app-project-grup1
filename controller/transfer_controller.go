@@ -15,7 +15,9 @@ func Transfer(db *sql.DB, phoneSender, phoneRecipient string, amount float64) (s
 	tx, err := db.Begin()
 	if err != nil {
 		log.Fatal("failed to begin transaction", err)
+		return "", err
 	}
+
 	Uuid := uuid.New()
 
 	//cek uang sender
@@ -34,6 +36,7 @@ func Transfer(db *sql.DB, phoneSender, phoneRecipient string, amount float64) (s
 	if err != nil {
 		tx.Rollback()
 		log.Fatal(err)
+		return "", err
 	}
 	//select userID dari sender
 	QueryID := ("SELECT id FROM users WHERE phone_number = ? AND deleted_at IS NULL")
@@ -52,6 +55,7 @@ func Transfer(db *sql.DB, phoneSender, phoneRecipient string, amount float64) (s
 	if err != nil {
 		tx.Rollback()
 		log.Fatal(err)
+		return "", err
 	}
 
 	//select userID dari recipient
@@ -73,8 +77,8 @@ func Transfer(db *sql.DB, phoneSender, phoneRecipient string, amount float64) (s
 	//commit transaksi
 	err = tx.Commit()
 	if err != nil {
-		tx.Rollback()
 		log.Fatal(err)
+		return "", err
 	}
 	outputStr := "\n[SUCCESS] Transfer successfully.\n\n"
 	return outputStr, nil
@@ -86,19 +90,19 @@ func TransferHistory(db *sql.DB, phoneNumber string) ([]entity.History, error) {
 
 	senderQuery := `SELECT tf.id, recipient.username, recipient.phone_number, tf.amount, tf.created_at
 	FROM transfer AS tf
-	INNER JOIN users AS sender ON user_id_sender = sender.id
-	INNER JOIN users AS recipient ON user_id_recipient = recipient.id
+	INNER JOIN users AS sender ON tf.user_id_sender = sender.id
+	INNER JOIN users AS recipient ON tf.user_id_recipient = recipient.id
 	WHERE sender.phone_number = ?
 	AND sender.deleted_at IS NULL
-	ORDER BY tf.id DESC;`
+	ORDER BY tf.created_at DESC;`
 
 	recipientQuery := `SELECT tf.id, sender.username, sender.phone_number, tf.amount, tf.created_at
 	FROM transfer AS tf
-	INNER JOIN users AS sender ON user_id_sender = sender.id
-	INNER JOIN users AS recipient ON user_id_recipient = recipient.id
+	INNER JOIN users AS sender ON tf.user_id_sender = sender.id
+	INNER JOIN users AS recipient ON tf.user_id_recipient = recipient.id
 	WHERE recipient.phone_number = ?
 	AND recipient.deleted_at IS NULL
-	ORDER BY tf.id DESC;`
+	ORDER BY tf.created_at DESC;`
 
 	//mendapatkan riwayat transfeer sebagai SENDER
 	senderRow, err := db.Query(senderQuery, phoneNumber)
