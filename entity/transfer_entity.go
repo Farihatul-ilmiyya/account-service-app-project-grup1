@@ -6,6 +6,6 @@ type Transfer struct {
 	ID              string
 	UserIdSender    string
 	UserIdRecipient string
-	Amount          int
+	Amount          float64
 	CreatedAt       time.Time
 }

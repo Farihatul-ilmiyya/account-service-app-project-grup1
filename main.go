@@ -214,6 +214,30 @@ func main() {
 			fmt.Println("Top Up History")
 		case 9:
 			fmt.Println("Transfer History")
+			if !isLogin {
+				fmt.Println("You are not Login")
+				return
+			}
+			// transfer := entity.History{PhoneNumber: phoneNumber}
+			tfHistory, err := controller.TransferHistory(db, phoneNumber)
+			if err != nil {
+				log.Fatal(err)
+			}
+
+			for _, History := range tfHistory {
+				if History.IsSender {
+					fmt.Println("Transaction Type: Sender")
+				} else {
+					fmt.Println("Transaction Type: Recipient")
+				}
+				fmt.Printf("Transfer ID\t: %s\n", History.ID)
+				fmt.Printf("User Name\t: %s\n", History.Username)
+				fmt.Printf("Phone Number\t: %s\n", History.PhoneNumber)
+				fmt.Printf("Transfer Amount\t: %.2f\n", History.Amount)
+				fmt.Printf("Transaction Time: %s\n", History.CreatedAt)
+
+				fmt.Println("-----------------------------------")
+			}
 		case 10:
 			fmt.Println("Other Contact")
 
