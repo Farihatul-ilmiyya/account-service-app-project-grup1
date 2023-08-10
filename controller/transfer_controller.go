@@ -11,19 +11,13 @@ import (
 )
 
 func Transfer(db *sql.DB, phoneSender, phoneRecipient string, amount float64) (string, error) {
-	//0.memulai transaksi
-	//1. cek uang pengirim dulu
-	//2. jika uang lebih besar atau sama dengan amount
-	//
-	//4. lalu kirim dengan cara update uang pengirim yaitu balance - ...
-	//5. update uang penerima bertambah balance + ...
-	//6. masukkan transaksinya ke tabel topup agar tercatat
-
+	//start transaksi
 	tx, err := db.Begin()
 	if err != nil {
 		log.Fatal("failed to begin transaction", err)
 	}
 	Uuid := uuid.New()
+
 	//cek uang sender
 	var senderBalance float64
 	err = tx.QueryRow("SELECT balance FROM users WHERE phone_number = ? AND deleted_at IS NULL", phoneSender).Scan(&senderBalance)
