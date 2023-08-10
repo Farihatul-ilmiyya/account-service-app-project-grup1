@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"sort"
 	"time"
 
 	"github.com/google/uuid"
@@ -153,5 +154,9 @@ func TransferHistory(db *sql.DB, phoneNumber string) ([]entity.History, error) {
 		tfHistories.IsSender = false
 		tfHistory = append(tfHistory, tfHistories)
 	}
+	// Mengurutkan semua riwayat berdasarkan CreatedAt
+	sort.Slice(tfHistory, func(i, j int) bool {
+		return tfHistory[i].CreatedAt.After(tfHistory[j].CreatedAt)
+	})
 	return tfHistory, nil
 }
