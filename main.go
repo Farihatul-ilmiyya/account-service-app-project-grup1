@@ -51,12 +51,20 @@ func main() {
 			fmt.Print("\nEnter the data below:")
 
 			//Entering Username
-			fmt.Print("\nUsername\t: ")
-			newUser.Username, err = helpers.Readline()
-			if err != nil {
-				log.Fatal("Error: ", err.Error())
+			userNameLoop := false
+			for !userNameLoop {
+				fmt.Print("\nUsername\t: ")
+				fmt.Scanln(&newUser.Username)
+				if err != nil {
+					log.Fatal("Error: ", err.Error())
+				}
+				if newUser.Address == "" {
+					fmt.Print("Address cannot empty")
+					userNameLoop = false
+				} else {
+					userNameLoop = true
+				}
 			}
-
 			//Entering email
 			emailLoop := false
 			for !emailLoop {
@@ -116,10 +124,19 @@ func main() {
 			}
 
 			//Entering address
-			fmt.Print("\nAddress\t\t: ")
-			newUser.Address, err = helpers.Readline()
-			if err != nil {
-				log.Fatal("Error: ", err.Error())
+			addressLoop := false
+			for !addressLoop {
+				fmt.Print("\nAddress\t\t: ")
+				newUser.Address, err = helpers.Readline()
+				if err != nil {
+					log.Fatal("Error: ", err.Error())
+				}
+				if newUser.Address == "" {
+					fmt.Print("Address cannot empty")
+					addressLoop = false
+				} else {
+					addressLoop = true
+				}
 			}
 
 			//registering new user
@@ -172,6 +189,7 @@ func main() {
 		case 4:
 			fmt.Println("Update Account")
 		case 5:
+			fmt.Println("Delete Account")
 			userDelete := entity.Users{PhoneNumber: phoneNumber}
 			if !isLogin {
 				fmt.Println("You are not Login")
@@ -218,7 +236,6 @@ func main() {
 				fmt.Println("You are not Login")
 				return
 			}
-			// transfer := entity.History{PhoneNumber: phoneNumber}
 			tfHistory, err := controller.TransferHistory(db, phoneNumber)
 			if err != nil {
 				log.Fatal(err)

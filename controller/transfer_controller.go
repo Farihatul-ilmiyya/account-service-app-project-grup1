@@ -74,7 +74,7 @@ func Transfer(db *sql.DB, phoneSender, phoneRecipient string, amount float64) (s
 	err = tx.Commit()
 	if err != nil {
 		tx.Rollback()
-		log.Fatal()
+		log.Fatal(err)
 	}
 	outputStr := "\n[SUCCESS] Transfer successfully.\n\n"
 	return outputStr, nil
