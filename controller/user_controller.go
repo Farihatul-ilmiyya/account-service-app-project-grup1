@@ -130,7 +130,7 @@ func UpdateAccount(db *sql.DB, user entity.Users) (string, error) {
 		args = append(args, user.Address)
 	}
 
-	// baris ini khusu where di sql
+	// baris ini khusu wheres di sql
 	if user.PhoneNumber != "" {
 		where += " AND phone_number= ? "
 		args = append(args, user.PhoneNumber)
@@ -141,7 +141,7 @@ func UpdateAccount(db *sql.DB, user entity.Users) (string, error) {
 	fmt.Println(sqlQuerry)
 	_, err := db.Exec(sqlQuerry, args...)
 	if err != nil {
-		return "", nil
+		return "", err
 	}
 	outputStr := "\n[SUCCESS] Update Account successfully.\n\n"
 	return outputStr, nil
