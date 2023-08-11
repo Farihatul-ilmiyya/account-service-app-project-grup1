@@ -56,11 +56,8 @@ func main() {
 			for !userNameLoop {
 				fmt.Print("\nUsername\t: ")
 				fmt.Scanln(&newUser.Username)
-				if err != nil {
-					log.Fatal("Error: ", err.Error())
-				}
-				if newUser.Address == "" {
-					fmt.Print("Address cannot empty")
+				if newUser.Username == "" {
+					fmt.Print("User cannot empty")
 					userNameLoop = false
 				} else {
 					userNameLoop = true
