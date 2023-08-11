@@ -17,44 +17,48 @@ func TopUp(db *sql.DB, phoneNumber string, amount float64) (string, error) {
 		return "", fmt.Errorf("failed to begin transaction: %v", err)
 	}
 	// Menunda transaksi jika ada yang gagal
-	defer transaction.Rollback()
 
 	Uuid := uuid.New()
 
 	// Memeriksa saldo user
 	var startingBalance float64
 	sqlQuery1 := `SELECT balance FROM users WHERE phone_number = ?`
-	err = db.QueryRow(sqlQuery1, phoneNumber).Scan(&startingBalance)
+	err = transaction.QueryRow(sqlQuery1, phoneNumber).Scan(&startingBalance)
 	if err != nil {
+		transaction.Rollback()
 		return "", fmt.Errorf("failed to fetch starting balance: %v", err)
 	}
 
 	//update user balance
 	var newBalance = startingBalance + amount
-	sqlQuery2 := `UPDATE users SET balance = balance + ? WHERE phone_number = ?`
-	_, err = db.Exec(sqlQuery2, newBalance, phoneNumber)
+	sqlQuery2 := `UPDATE users SET balance =  ? WHERE phone_number = ?`
+	_, err = transaction.Exec(sqlQuery2, newBalance, phoneNumber)
 	if err != nil {
+		transaction.Rollback()
 		return "", fmt.Errorf("failed to update user balance: %v", err)
 	}
 
 	// Get user ID
 	var userId string
 	sqlQuery3 := `SELECT id FROM users WHERE phone_number = ?`
-	err = db.QueryRow(sqlQuery3, phoneNumber).Scan(&userId)
+	err = transaction.QueryRow(sqlQuery3, phoneNumber).Scan(&userId)
 	if err != nil {
+		transaction.Rollback()
 		return "", err
 	}
 
 	// Menambahkan baris baru di tabel topup_histories
 
 	sqlQuery4 := `INSERT INTO top_up (id,user_id, amount, created_at) VALUES (?,?, ?, NOW())`
-	_, err = db.Exec(sqlQuery4, Uuid, userId, amount)
+	_, err = transaction.Exec(sqlQuery4, Uuid, userId, amount)
 	if err != nil {
+		transaction.Rollback()
 		return "", err
 	}
 
 	// commit transaction
 	if err = transaction.Commit(); err != nil {
+		
 		return "", fmt.Errorf("failed to commit transaction: %v", err)
 	}
 
@@ -99,9 +103,6 @@ func HistoryTopUp(db *sql.DB, phoneNumber string) ([]entity.HistoryTopUp, error)
 		histories = append(histories, history)
 	}
 
-	if err = rows.Err(); err != nil {
-		return []entity.HistoryTopUp{}, fmt.Errorf("an error occurred while retrieving rows: %v", err)
-	}
 
 	return histories, nil
 }
