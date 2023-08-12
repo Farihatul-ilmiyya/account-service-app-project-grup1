@@ -85,7 +85,7 @@ func DeleteUser(db *sql.DB, user entity.Users) (string, error) {
 }
 
 func ReadOtherUser(db *sql.DB, user entity.Users) (entity.Users, error) {
-	sqlQuery := "SELECT username, email, phone_Number, date_of_birth, address FROM Users WHERE phone_number = ? AND deleted_at IS NULL "
+	sqlQuery := "SELECT username, email, phone_Number, date_of_birth, address FROM users WHERE phone_number = ? AND deleted_at IS NULL "
 
 	err := db.QueryRow(sqlQuery, user.PhoneNumber).Scan(&user.Username, &user.Email, &user.PhoneNumber, &user.DateOfBirth, &user.Address)
 
